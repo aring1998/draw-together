@@ -5,7 +5,7 @@ export const suc = <T>(data: T, message: string = 'success', event?: string) => 
   event
 })
 
-export const fail = (message: string = 'fail')=> ({
+export const fail = (message: string = 'fail') => ({
   code: -1,
   message
 })

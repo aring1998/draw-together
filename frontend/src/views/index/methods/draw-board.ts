@@ -74,7 +74,11 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
         const x = e.offsetX - (e.offsetX % 5)
         const y = e.offsetY - (e.offsetY % 5)
         const index = getIndexByPos(x, y)
-        handleDraw(index, color)
+        handleDraw(index, color, (res) => {
+          if (res.code !== 0) {
+            ElMessage.error('绘画间隔中')
+          }
+        })
         board.onmousemove = null
         oldPos = [-5, -5]
         setTimeout(() => {
@@ -96,7 +100,13 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     })
   }
 
-  initSocket(uuidv4(), (res) => {
+  let uid = localStorage.getItem('client-uid')
+  if (!uid) {
+    const uidv4 = uuidv4()
+    localStorage.setItem('client-uid', uidv4)
+    uid = uidv4
+  }
+  initSocket(uid, (res) => {
     initDrawBoard(res.data)
   })
   drawEvent((data) => boardDrawListener(data))

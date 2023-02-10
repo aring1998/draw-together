@@ -20,8 +20,10 @@ export function initSocket(uid: string, func: (res: Res<string[]>) => void) {
   })
 }
 
-export function handleDraw(index: number, color: string) {
-  socket.emit('draw', { index, color })
+export function handleDraw(index: number, color: string, func: (res: Res<any>) => void) {
+  socket.emit('draw', { index, color }, (res: Res<any>) => {
+    func(res)
+  })
 }
 
 export function drawEvent(func: (data: DrawEvent) => void) {
