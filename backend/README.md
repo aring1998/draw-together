@@ -8,9 +8,9 @@
 2. Socket.io
 
 ## 📦常用操作
-1. 安装依赖 `yarn install`
-2. 运行项目 `yarn dev`
-3. 打包项目 `yarn build`
+1. 安装依赖 `npm run install`
+2. 运行项目 `npm run dev`
+3. 打包项目 `npm run build`
 4. 服务指令 `
   npm run pm 运行;
   npm run pmr 重启;

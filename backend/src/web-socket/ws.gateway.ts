@@ -25,10 +25,16 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('draw')
-  findAll(@ConnectedSocket() client: any, @MessageBody() data: { index: number; color: string }) {
+  handleDraw(@ConnectedSocket() client: any, @MessageBody() data: { index: number; color: string }) {
     boardData.splice(data.index, 1, data.color)
     // 给其它客户端发送通知
     client.broadcast.emit('draw', data)
     return suc(data, '绘制成功', 'draw')
+  }
+
+  @SubscribeMessage('getColor')
+  getColor( @MessageBody() index: number) {
+    const data = boardData[index]
+    return suc(data, '')
   }
 }

@@ -1,33 +1,37 @@
 import io from 'socket.io-client'
 
-interface Res {
+interface Res<T> {
   code: number
-  data: any
+  data: T
   message: string
 }
-interface DrawEvent {
+export interface DrawEvent {
   index: number
   color: string
 }
 
-export const socket = io('http://124.221.181.20:3525')
+export const socket = io(import.meta.env.VITE_API_BASE_URL)
 
-export function initSocket(uid: string, func: (res: Res) => void) {
+export function initSocket(uid: string, func: (res: Res<string[]>) => void) {
   socket.on('connect', () => {
-    socket.emit('init', { uid }, (res: Res) => {
+    socket.emit('init', { uid }, (res: Res<string[]>) => {
       func(res)
     })
   })
 }
 
-export function handleDraw(index: number, color: string, func: (res: Res) => void) {
-  socket.emit('draw', { index, color }, (res: Res) => {
-    func(res)
-  })
+export function handleDraw(index: number, color: string) {
+  socket.emit('draw', { index, color })
 }
 
 export function drawEvent(func: (data: DrawEvent) => void) {
   socket.on('draw', (data: DrawEvent) => {
     func(data)
+  })
+}
+
+export function getColor(index: number, func: (res: Res<string>) => void) {
+  socket.emit('getColor', index, (res: Res<string>) => {
+    func(res)
   })
 }

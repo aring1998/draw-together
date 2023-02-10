@@ -8,8 +8,6 @@
 2. ElementPlus
 
 ## 📦常用操作
-1. 安装依赖 `yarn install`
-2. 运行项目 `yarn dev`
-3. 打包项目 `yarn build`
-4. 自动化部署 `sh deploy.sh`
-
+1. 安装依赖 `npm run install`
+2. 运行项目 `npm run dev`
+3. 打包项目 `npm run build`
