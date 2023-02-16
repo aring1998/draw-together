@@ -6,6 +6,7 @@ import { suc, fail } from 'src/common/utils/response'
 import { DrawRecordService } from 'src/modules/draw-record/draw-record.service'
 interface Client {
   uid: string
+  drawTime: number
   created: string
 }
 const boardData = initBoardData()
@@ -24,32 +25,35 @@ export class EventsGateway implements OnGatewayDisconnect {
   server: Server
 
   @SubscribeMessage('init')
-  wsInit(@MessageBody() data: { uid: string }) {
-    this.uid = data.uid
+  async wsInit(@MessageBody() data: { uid: string; drawTime: number }) {
+    const { uid } = data
+    this.uid = uid
     this.clients.push({
       ...data,
       created: moment().format('YYYY-MM-DD HH:mm:ss')
     })
-    return suc(boardData, '')
+    return suc(boardData, '连接初始化成功')
   }
 
   @SubscribeMessage('draw')
   async handleDraw(@ConnectedSocket() client: any, @MessageBody() data: { index: number; color: string }) {
     const { index, color } = data
-    const res = await this.drawRecordService.findLastRecordByUid(this.uid)
-    const drawTime = Number(res?.drawTime)
+    const clientIndex = this.clients.findIndex(item => item.uid === this.uid)
+    const drawTime = this.clients[clientIndex].drawTime
+    const currentTime = Number(moment().format('x'))
     // TODO 测试版本绘画间隔暂定500毫秒
-    if (Number(moment().format('x')) < drawTime + 500) return fail('绘画间隔中')
-    await this.drawRecordService.save({
-      uid: this.uid,
-      drawIndex: index,
-      drawTime: moment().format('x'),
-      created: moment().format('YYYY-MM-DD HH:mm:ss')
-    })
-
+    if (drawTime !== 0 && currentTime < drawTime + 500) return fail('绘画间隔中')
+    this.clients[clientIndex].drawTime = currentTime
     boardData.splice(index, 1, color)
     // 给其它客户端发送通知
     client.broadcast.emit('draw', data)
+
+    this.drawRecordService.save({
+      uid: this.uid,
+      drawIndex: index,
+      drawTime: moment().format('x'),
+      created: moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+    })
     return suc(data, '绘制成功', 'draw')
   }
 

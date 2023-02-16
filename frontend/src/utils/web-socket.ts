@@ -1,10 +1,6 @@
 import io from 'socket.io-client'
+import type { Res, UserInfo } from '@/types'
 
-interface Res<T> {
-  code: number
-  data: T
-  message: string
-}
 export interface DrawEvent {
   index: number
   color: string
@@ -12,9 +8,9 @@ export interface DrawEvent {
 
 export const socket = io(import.meta.env.VITE_API_BASE_URL)
 
-export function initSocket(uid: string, func: (res: Res<string[]>) => void) {
+export function initSocket(userInfo: UserInfo, func: (res: Res<string[]>) => void) {
   socket.on('connect', () => {
-    socket.emit('init', { uid }, (res: Res<string[]>) => {
+    socket.emit('init', userInfo, (res: Res<string[]>) => {
       func(res)
     })
   })

@@ -1,9 +1,9 @@
 import { ref } from 'vue'
-import { v4 as uuidv4 } from 'uuid'
 import { throttle } from '@/utils/throttle'
 import { drawEvent, initSocket, handleDraw, type DrawEvent, getColor } from '@/utils/web-socket'
 import { getIndexByPos, getPosByIndex } from '@/utils'
 import { ElMessage, type ElDropdownInjectionContext } from 'element-plus'
+import { createUserInfo, updateUserDrawTime } from './user-info'
 
 export const data = ref({
   color: '#000000',
@@ -75,9 +75,8 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
         const y = e.offsetY - (e.offsetY % 5)
         const index = getIndexByPos(x, y)
         handleDraw(index, color, (res) => {
-          if (res.code !== 0) {
-            ElMessage.error('绘画间隔中')
-          }
+          if (res.code !== 0) return ElMessage.error('绘画间隔中')
+          updateUserDrawTime()
         })
         board.onmousemove = null
         oldPos = [-5, -5]
@@ -94,19 +93,14 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     y -= y % 5
     console.log(x, y)
     const index = getIndexByPos(x, y)
-    getColor(index, res => {
+    getColor(index, (res) => {
       data.value.color = res.data
       ElMessage.success('复制颜色成功')
     })
   }
 
-  let uid = localStorage.getItem('client-uid')
-  if (!uid) {
-    const uidv4 = uuidv4()
-    localStorage.setItem('client-uid', uidv4)
-    uid = uidv4
-  }
-  initSocket(uid, (res) => {
+  const userInfo = createUserInfo()
+  initSocket(userInfo, (res) => {
     initDrawBoard(res.data)
   })
   drawEvent((data) => boardDrawListener(data))
