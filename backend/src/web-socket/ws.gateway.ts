@@ -1,6 +1,6 @@
 import { MessageBody, ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer, OnGatewayDisconnect } from '@nestjs/websockets'
 import { Server } from 'socket.io'
-import * as moment from 'moment'
+import * as dayjs from 'dayjs'
 import { initBoardData } from 'src/common/utils'
 import { suc, fail } from 'src/common/utils/response'
 import { DrawRecordService } from 'src/modules/draw-record/draw-record.service'
@@ -30,7 +30,7 @@ export class EventsGateway implements OnGatewayDisconnect {
     this.uid = uid
     this.clients.push({
       ...data,
-      created: moment().format('YYYY-MM-DD HH:mm:ss')
+      created: dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
     })
     return suc(boardData, '连接初始化成功')
   }
@@ -40,7 +40,7 @@ export class EventsGateway implements OnGatewayDisconnect {
     const { index, color } = data
     const clientIndex = this.clients.findIndex(item => item.uid === this.uid)
     const drawTime = this.clients[clientIndex].drawTime
-    const currentTime = Number(moment().format('x'))
+    const currentTime = Number(dayjs().unix())
     // TODO 测试版本绘画间隔暂定500毫秒
     if (drawTime !== 0 && currentTime < drawTime + 500) return fail('绘画间隔中')
     this.clients[clientIndex].drawTime = currentTime
@@ -51,8 +51,8 @@ export class EventsGateway implements OnGatewayDisconnect {
     this.drawRecordService.save({
       uid: this.uid,
       drawIndex: index,
-      drawTime: moment().format('x'),
-      created: moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+      drawTime: currentTime.toString(),
+      created: dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
     })
     return suc(data, '绘制成功', 'draw')
   }

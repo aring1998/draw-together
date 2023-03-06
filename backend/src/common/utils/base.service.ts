@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs'
 import { DeepPartial, FindOptionsWhere, Repository, UpdateResult } from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
@@ -5,7 +6,10 @@ export class BaseSevice<T> {
   constructor(private readonly repository: Repository<T>) {}
 
   save(data: DeepPartial<T>): Promise<T> {
-    return this.repository.save(data)
+    return this.repository.save({
+      ...data,
+      created: dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
+    })
   }
 
   saveMany(data: DeepPartial<T>[]): Promise<T[]> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe, Headers } from '@nestjs/common'
+import { Controller } from '@nestjs/common'
 import { DrawRecordService } from './draw-record.service'
 
 @Controller('drawRecord')
