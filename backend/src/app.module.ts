@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common'
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -9,6 +9,7 @@ import * as dotenv from 'dotenv'
 import { AppMiddleware } from './app.middleware'
 import { User } from './modules/user/user.entity'
 import { UserModule } from './modules/user/user,module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 dotenv.config()
 @Module({
@@ -23,6 +24,7 @@ dotenv.config()
       entities: [DrawRecord, User],
       synchronize: true
     }),
+    ScheduleModule.forRoot(),
     EventsModule,
     DrawRecordModule,
     UserModule

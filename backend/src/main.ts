@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+import dayjs from 'dayjs'
 import { AppModule } from './app.module'
 import { HttpExceptionFilter } from './http-exception.filter'
 

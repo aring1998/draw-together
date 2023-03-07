@@ -4,12 +4,15 @@ import * as dayjs from 'dayjs'
 import { initBoardData } from 'src/common/utils'
 import { suc, fail } from 'src/common/utils/response'
 import { DrawRecordService } from 'src/modules/draw-record/draw-record.service'
+import { Cron } from '@nestjs/schedule/dist/decorators'
+import { CronExpression } from '@nestjs/schedule/dist/enums'
+import { getBoardData, saveBoardData } from './methods/board-data'
 interface Client {
   uid: string
   drawTime: number
   created: string
 }
-const boardData = initBoardData()
+const boardData = getBoardData() || initBoardData()
 
 @WebSocketGateway({
   cors: {
@@ -66,5 +69,14 @@ export class EventsGateway implements OnGatewayDisconnect {
   handleDisconnect() {
     const index = this.clients.findIndex(item => item.uid)
     this.clients.splice(index, 1)
+  }
+
+  // 定时备份画板数据
+  @Cron(CronExpression.EVERY_HOUR)
+  async saveRecord() {
+    const res = await this.drawRecordService.findLastRecord()
+    if (dayjs(dayjs()).diff(dayjs(res.created), 'hour') === 0) {
+      saveBoardData(boardData)
+    }
   }
 }

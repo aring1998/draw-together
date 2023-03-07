@@ -12,6 +12,9 @@ export class DrawRecordService extends BaseSevice<DrawRecord> {
   ) {
     super(drawRecordRepository)
   }
+  findLastRecord() {
+    return this.drawRecordRepository.createQueryBuilder().orderBy('drawTime', 'DESC').getOne()
+  }
   findLastRecordByUid(uid: string) {
     return this.drawRecordRepository.createQueryBuilder().where({ uid }).orderBy('drawTime', 'DESC').getOne()
   }
