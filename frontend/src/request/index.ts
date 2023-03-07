@@ -8,7 +8,7 @@ interface Res<T> {
 }
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}api`,
   timeout: 30000,
   validateStatus: (status) => status >= 200 && status <= 600,
 })

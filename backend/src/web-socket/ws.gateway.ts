@@ -40,7 +40,7 @@ export class EventsGateway implements OnGatewayDisconnect {
     const { index, color } = data
     const clientIndex = this.clients.findIndex(item => item.uid === this.uid)
     const drawTime = this.clients[clientIndex].drawTime
-    const currentTime = Number(dayjs().unix())
+    const currentTime = Number(dayjs().valueOf())
     // TODO 测试版本绘画间隔暂定500毫秒
     if (drawTime !== 0 && currentTime < drawTime + 500) return fail('绘画间隔中')
     this.clients[clientIndex].drawTime = currentTime
