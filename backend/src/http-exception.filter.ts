@@ -20,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         statusCode: 500,
         date,
         path: request.url,
-        message: `服务器崩溃！Error: ${exception.message}`
+        message: exception.message
       })
     }
     const status = exception.getStatus()

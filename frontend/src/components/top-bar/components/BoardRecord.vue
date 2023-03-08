@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { boardRecordList } from '@/api/board-record/board-record'
 import type { BoardRecordItem } from '@/api/board-record/types/board-record-types'
 
@@ -44,7 +44,7 @@ watch(
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="最后修改用户名" width="200" />
+      <el-table-column prop="username" label="最后修改者" width="200" />
       <el-table-column prop="created" label="存储时间" />
     </el-table>
     <el-pagination

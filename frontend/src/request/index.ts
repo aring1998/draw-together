@@ -27,7 +27,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (res) => {
     if (res.status >= 300) {
-      ElMessage.error(`网络请求错误，错误：${res.statusText}`)
+      ElMessage.error(`网络请求错误，错误：${res.data.message}，ErrorCode：${res.data.statusCode}`)
       throw new Error(res.statusText)
     }
     if (res.data.code !== 200) {

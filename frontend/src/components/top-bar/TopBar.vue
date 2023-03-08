@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
-import { defineEmits, ref } from 'vue'
+import { ref } from 'vue'
 import Account from './components/Account.vue'
 import BoardRecord from './components/BoardRecord.vue'
 
