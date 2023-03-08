@@ -3,11 +3,13 @@ import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
 import { defineEmits, ref } from 'vue'
 import Account from './components/Account.vue'
+import BoardRecord from './components/BoardRecord.vue'
 
 const activeMenu = '1'
 const emits = defineEmits(['colorBoardShowChange'])
 const props = defineProps<{ colorBoardShow: boolean }>()
 const accoutShow = ref(false)
+const boardRecordShow = ref(false)
 function logout() {
   localStorage.removeItem('token')
   useUserStore().token = ''
@@ -30,6 +32,7 @@ function logout() {
     >
       <el-menu-item index="showColorBoard" v-show="!props.colorBoardShow" @click="emits('colorBoardShowChange', true)">显示调色板</el-menu-item>
       <el-menu-item index="hideColorBoard" v-show="props.colorBoardShow" @click="emits('colorBoardShowChange', false)">隐藏调色板</el-menu-item>
+      <el-menu-item index="boardRecord" @click="boardRecordShow = true">画板记录</el-menu-item>
       <el-sub-menu index="rank">
         <template #title>排行</template>
         <el-menu-item>勤奋榜</el-menu-item>
@@ -44,6 +47,7 @@ function logout() {
     <el-dialog v-model="accoutShow" width="30vw">
       <Account @success="accoutShow = false"></Account>
     </el-dialog>
+    <BoardRecord @success="boardRecordShow = false" :show="boardRecordShow"></BoardRecord>
   </div>
 </template>
 

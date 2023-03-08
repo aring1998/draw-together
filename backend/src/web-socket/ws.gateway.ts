@@ -7,6 +7,9 @@ import { DrawRecordService } from 'src/modules/draw-record/draw-record.service'
 import { Cron } from '@nestjs/schedule/dist/decorators'
 import { CronExpression } from '@nestjs/schedule/dist/enums'
 import { getBoardData, saveBoardData } from './methods/board-data'
+import { saveDrawCanvas } from './methods/draw-canvas'
+import { BoardRecordService } from 'src/modules/board-record/board-record.service'
+
 interface Client {
   uid: string
   drawTime: number
@@ -20,7 +23,7 @@ const boardData = getBoardData() || initBoardData()
   }
 })
 export class EventsGateway implements OnGatewayDisconnect {
-  constructor(private readonly drawRecordService: DrawRecordService) {}
+  constructor(private readonly drawRecordService: DrawRecordService, private readonly boardRecordService: BoardRecordService) {}
   private uid = ''
   private clients: Client[] = []
 
@@ -73,10 +76,12 @@ export class EventsGateway implements OnGatewayDisconnect {
 
   // 定时备份画板数据
   @Cron(CronExpression.EVERY_HOUR)
-  async saveRecord() {
+  async saveBoardData() {
     const res = await this.drawRecordService.findLastRecord()
-    if (dayjs(dayjs()).diff(dayjs(res.created), 'hour') === 0) {
-      saveBoardData(boardData)
-    }
+    if (dayjs(dayjs()).diff(dayjs(res.created), 'hour') !== 0) return
+    saveBoardData(boardData)
+    const imgUrl = saveDrawCanvas(boardData)
+    if (!imgUrl) return
+    this.boardRecordService.save({ imgUrl, lastEditorUid: res.uid })
   }
 }

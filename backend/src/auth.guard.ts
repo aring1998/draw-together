@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>()
     const token = request.headers.token?.toString()
-    if (!token) throw noAuth()
+    if (!token) noAuth()
     return this.valiAuth(token, request)
   }
   async valiAuth(token: string, req: Request) {

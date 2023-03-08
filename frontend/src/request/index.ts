@@ -43,10 +43,10 @@ instance.interceptors.response.use(
   },
 )
 export default function request<T>(config: AxiosRequestConfig) {
-  return new Promise<Res<T>>((resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     instance
-      .request<Res<T>>(config)
-      .then((response: AxiosResponse<Res<T>>) => {
+      .request<T>(config)
+      .then((response: AxiosResponse<T>) => {
         resolve(response.data)
       })
       .catch((error: any) => {

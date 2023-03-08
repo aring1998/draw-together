@@ -4,6 +4,7 @@ import { suc, fail } from 'src/common/utils/response'
 import { UserDTO, UserRegisterDTO } from './classes/user'
 import { UserService } from './user.service'
 import { v4 as uuidv4 } from 'uuid'
+import { getPayload } from 'src/common/utils'
 
 @Controller('user')
 export class UserController {
@@ -11,7 +12,8 @@ export class UserController {
 
   @Post('register')
   async register(@Body(ValidationPipe) body: UserRegisterDTO): Promise<BaseResDTO<UserDTO>> {
-    const { username, password, email } = body
+    const payload = getPayload(body, ['username', 'password', 'email'])
+    const { username, email } = payload
 
     const userInfo = await this.userService.findOne({ username })
     if (userInfo) return fail('该用户名已被注册')
@@ -20,9 +22,7 @@ export class UserController {
     if (emailInfo && email) return fail('该邮箱已被使用')
 
     const res = await this.userService.save({
-      username,
-      password,
-      email,
+      ...payload,
       uid: uuidv4(),
       token: uuidv4(),
       auth: 0
@@ -33,7 +33,7 @@ export class UserController {
 
   @Post('login')
   async login(@Body(ValidationPipe) body: UserRegisterDTO): Promise<BaseResDTO<UserDTO>> {
-    const { username, password } = body
+    const { username, password } = getPayload(body, ['username', 'password'])
 
     const res = await this.userService.findOne({ username })
     if (!res) return fail('用户名不存在')

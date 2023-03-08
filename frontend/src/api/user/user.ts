@@ -1,14 +1,15 @@
 import request from '@/request'
+import type { Res } from '@/types'
 import type { UserItem, LoginParams, RegisterParams } from './types/user-types'
 
 enum API {
   login = '/user/login',
   register = '/user/register',
-  token = '/user/token'
+  token = '/user/token',
 }
 
 export function userLogin(data: LoginParams) {
-  return request<UserItem>({
+  return request<Res<UserItem>>({
     url: API.login,
     method: 'POST',
     data,
@@ -16,7 +17,7 @@ export function userLogin(data: LoginParams) {
 }
 
 export function userRegister(data: RegisterParams) {
-  return request<UserItem>({
+  return request<Res<UserItem>>({
     url: API.register,
     method: 'POST',
     data,
@@ -24,7 +25,7 @@ export function userRegister(data: RegisterParams) {
 }
 
 export function userToken() {
-  return request<UserItem>({
+  return request<Res<UserItem>>({
     url: API.token,
     method: 'POST',
   })

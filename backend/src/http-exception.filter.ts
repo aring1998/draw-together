@@ -14,13 +14,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
+    if (!exception.getStatus) {
+      return response.status(500).json({
+        statusCode: 500,
+        date,
+        path: request.url,
+        message: `服务器崩溃！Error: ${exception.message}`
+      })
+    }
     const status = exception.getStatus()
     let { message } = exception.getResponse().valueOf() as httpError
     if (!message) message = exception.message
 
     response.status(status).json({
       statusCode: status,
-      date: dayjs().format('YYYY-MM-DD HH:mm:ss.SSS'),
+      date,
       path: request.url,
       message
     })
