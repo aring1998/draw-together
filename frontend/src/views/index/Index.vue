@@ -39,7 +39,7 @@ onMounted(() => {
       <a @click="onlineClientsShow = true">当前在线人数：{{ data.clients.length || 0 }}</a>
       <OnlineClients :show="onlineClientsShow" :clients="data.clients" @close="onlineClientsShow = false"></OnlineClients>
     </p>
-    <color-board @colorSelect="(val) => (data.color = val)" v-show="colorBoardShow"></color-board>
+    <color-board @colorSelect="(val) => (data.color = val)" v-model="data.color" v-show="colorBoardShow"></color-board>
     <div class="board-wrap">
       <div class="canvas-wrap">
         <canvas ref="boardRef" width="1000" height="600"></canvas>

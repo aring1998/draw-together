@@ -1,23 +1,17 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-
 const colorList = ['#ff0000', '#ffa500', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#000000', '#ffffff']
-const color = ref('#000000')
 const emits = defineEmits(['colorSelect'])
-watch(color, (val) => {
-  emits('colorSelect', val)
-})
 </script>
 
 <template>
   <div class="color-picker-wrap">
     <div class="color-picker">
       <span>当前颜色（点击可自由选取）：</span>
-      <el-color-picker v-model="color" />
+      <el-color-picker v-bind="$attrs" />
     </div>
     <div class="color-list">
       <span>常用颜色选取：</span>
-      <div class="item-wrap" v-for="(item, index) of colorList" :key="index" @click="color = item">
+      <div class="item-wrap" v-for="(item, index) of colorList" :key="index" @click="emits('colorSelect', item)">
         <div class="item" :style="{ backgroundColor: item }"></div>
       </div>
     </div>

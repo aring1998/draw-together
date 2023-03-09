@@ -95,7 +95,6 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     let [x, y] = data.value.rightMenuPos
     x -= x % 5
     y -= y % 5
-    console.log(x, y)
     const index = getIndexByPos(x, y)
     getColor(index, (res) => {
       data.value.color = res.data
