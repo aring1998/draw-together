@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common'
 import { Request, Response } from 'express'
-import * as dayjs from 'dayjs'
+import { getCurrentTime } from './common/utils/time'
 
 interface httpError {
   statusCode: number
@@ -14,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
-    const date = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
+    const date = getCurrentTime()
     if (!exception.getStatus) {
       return response.status(500).json({
         statusCode: 500,

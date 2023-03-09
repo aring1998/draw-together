@@ -2,6 +2,8 @@
 import { ref, reactive, watch } from 'vue'
 import { boardRecordList } from '@/api/board-record/board-record'
 import type { BoardRecordItem } from '@/api/board-record/types/board-record-types'
+import { formatDate } from '@/utils/time'
+import { useCommonStore } from '@/store/modules/common'
 
 const props = defineProps<{ show: boolean }>()
 const emits = defineEmits(['success'])
@@ -32,20 +34,21 @@ watch(
 
 <template>
   <el-dialog v-model="props.show" title="画板记录" width="80vw" @close="emits('success')">
-    <el-table :data="tableData" height="500px">
+    <el-table :data="tableData" height="450px" v-loading="useCommonStore().loading">
       <el-table-column prop="id" label="序号" width="80"></el-table-column>
       <el-table-column label="图片" width="300">
         <template #default="scope">
-          <el-popover placement="top-start" :width="200" trigger="hover">
-            <template #reference>
-              <el-image style="width: 100px; height: 100px" :src="scope.row?.imgUrl" />
-            </template>
-            <img :src="scope.row?.imgUrl" width="200" height="200" />
-          </el-popover>
+          <el-image
+            style="width: 100px; height: 60px"
+            :z-index="9000"
+            :src="scope.row?.imgUrl"
+            :preview-src-list="[scope.row?.imgUrl]"
+            :preview-teleported="true"
+          />
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="最后修改者" width="200" />
-      <el-table-column prop="created" label="存储时间" />
+      <el-table-column prop="username" label="最后修改者" width="200" :formatter="(row) => row.username ?? '(游客)'" />
+      <el-table-column prop="created" label="存储时间" :formatter="(row) => formatDate(row.created)" />
     </el-table>
     <el-pagination
       v-model:currentPage="pagination.page"

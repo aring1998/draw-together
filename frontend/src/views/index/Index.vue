@@ -3,11 +3,13 @@ import { ref, onMounted } from 'vue'
 import { useDrawBoard, data } from './methods/draw-board'
 import TopBar from '@/components/top-bar/TopBar.vue'
 import ColorBoard from './components/ColorBoard.vue'
+import OnlineClients from './components/OnlineClients.vue'
 
 const boardRef = ref<HTMLCanvasElement>()
 const maskRef = ref<HTMLCanvasElement>()
 const rightMenuRef = ref()
 const colorBoardShow = ref(true)
+const onlineClientsShow = ref(false)
 
 let boardMoveFunc: Function
 let getColorFunc: Function
@@ -32,6 +34,11 @@ onMounted(() => {
   <div class="index-pages pages">
     <top-bar :colorBoardShow="colorBoardShow" @colorBoardShowChange="(val) => (colorBoardShow = val)"></top-bar>
     <h2>一起来画画吧！</h2>
+    <p class="intro">
+      您每次仅仅可绘制一个像素块，全画板共24000个像素块，请随心所欲的在画板上与他人进行共同创作（或者捣蛋）。
+      <a @click="onlineClientsShow = true">当前在线人数：{{ data.clients.length || 0 }}</a>
+      <OnlineClients :show="onlineClientsShow" :clients="data.clients" @close="onlineClientsShow = false"></OnlineClients>
+    </p>
     <color-board @colorSelect="(val) => (data.color = val)" v-show="colorBoardShow"></color-board>
     <div class="board-wrap">
       <div class="canvas-wrap">
@@ -61,6 +68,12 @@ onMounted(() => {
   h2 {
     height: 58px;
     line-height: 58px;
+    margin: 10px 0;
+  }
+  .intro {
+    font-size: 14px;
+    color: #999;
+    // margin: 2px;
   }
   .board-wrap {
     position: relative;

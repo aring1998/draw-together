@@ -1,6 +1,6 @@
-import * as dayjs from 'dayjs'
 import { DeepPartial, FindOptionsWhere, Repository, UpdateResult } from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
+import { getCurrentTime } from './time'
 
 export class BaseSevice<T> {
   constructor(private readonly repository: Repository<T>) {}
@@ -8,7 +8,7 @@ export class BaseSevice<T> {
   save(data: DeepPartial<T>): Promise<T> {
     return this.repository.save({
       ...data,
-      created: dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
+      created: getCurrentTime()
     })
   }
 

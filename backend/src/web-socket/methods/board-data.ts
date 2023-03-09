@@ -1,12 +1,12 @@
-import * as dayjs from 'dayjs'
 import { writeFile, readFileSync } from 'fs'
 import * as dotenv from 'dotenv'
+import { getCurrentTime } from 'src/common/utils/time'
 dotenv.config()
 
 export function saveBoardData(boardData: string[]) {
   writeFile(process.env.BACKUP_PATH, JSON.stringify(boardData), err => {
     if (err) return console.error(err)
-    console.log(`${dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')} 备份创建成功`)
+    console.log(`${getCurrentTime()} 备份创建成功`)
   })
 }
 

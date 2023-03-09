@@ -1,7 +1,7 @@
 import { createCanvas } from 'canvas'
-import * as dayjs from 'dayjs'
 import { writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
+import { getCurrentTime } from 'src/common/utils/time'
 dotenv.config()
 
 export function saveDrawCanvas(data: string[]) {
@@ -14,7 +14,7 @@ export function saveDrawCanvas(data: string[]) {
     ctx.fillRect(x, y, 5, 5)
   })
   try {
-    const fileName = `${dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')}.png`
+    const fileName = `${getCurrentTime()}.png`
     writeFileSync(`${process.env.CANVAS_PATH}${fileName}`, canvas.toBuffer())
     return `${process.env.IMG_URL}${fileName}`
   } catch {

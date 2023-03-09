@@ -1,14 +1,18 @@
 import { ref } from 'vue'
 import { throttle } from '@/utils/throttle'
-import { drawEvent, initSocket, handleDraw, type DrawEvent, getColor } from '@/utils/web-socket'
+import { drawEvent, initSocket, handleDraw, type DrawEvent, getColor, clientsEvent } from '@/utils/web-socket'
 import { getIndexByPos, getPosByIndex } from '@/utils'
-import { ElMessage, type ElDropdownInjectionContext } from 'element-plus'
-import { createUserInfo, updateUserDrawTime } from './user-info'
+import { ElMessage } from 'element-plus'
+import { setClientInfo, updateClientDrawTime } from './client-info'
+import { useUserStore } from '@/store/modules/user'
+import type { ClientInfo } from '@/types'
 
 export const data = ref({
+  uid: '',
   color: '#000000',
   rightMenuShow: false,
   rightMenuPos: [-5, -5],
+  clients: [] as ClientInfo[],
 })
 export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, rightMenu: any) {
   const boardCtx = board.getContext('2d')
@@ -68,15 +72,15 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
         return
       }
       return throttle(() => {
-        const { color } = data.value
+        const { uid, color } = data.value
         claerOldPosDiv()
         boardCtx.fillStyle = color
         const x = e.offsetX - (e.offsetX % 5)
         const y = e.offsetY - (e.offsetY % 5)
         const index = getIndexByPos(x, y)
-        handleDraw(index, color, (res) => {
-          if (res.code !== 0) return ElMessage.error('绘画间隔中')
-          updateUserDrawTime()
+        handleDraw({ uid, index, color }, (res) => {
+          if (res.code === 500) return ElMessage.error(res.message)
+          updateClientDrawTime()
         })
         board.onmousemove = null
         oldPos = [-5, -5]
@@ -99,11 +103,14 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     })
   }
 
-  const userInfo = createUserInfo()
-  initSocket(userInfo, (res) => {
-    initDrawBoard(res.data)
+  initSocket(useUserStore().userInfo, (res) => {
+    if (res.code === 500) return ElMessage.error(res.message)
+    data.value.uid = res.data.clientInfo.uid
+    setClientInfo(res.data.clientInfo)
+    initDrawBoard(res.data.boardData)
   })
   drawEvent((data) => boardDrawListener(data))
+  clientsEvent((res) => data.value.clients = res)
   boardMoveListener()
   boardClickListener()
 

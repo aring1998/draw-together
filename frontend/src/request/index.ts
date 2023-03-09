@@ -1,21 +1,17 @@
+import { useCommonStore } from '@/store/modules/common'
 import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
-interface Res<T> {
-  code: number
-  data: T
-  message: string
-}
-
 const instance = axios.create({
   baseURL: `${import.meta.env.VITE_API_BASE_URL}api`,
-  timeout: 30000,
+  timeout: 10000,
   validateStatus: (status) => status >= 200 && status <= 600,
 })
 
 // 请求拦截
 instance.interceptors.request.use(
   (config) => {
+    useCommonStore().loading = true
     config.headers.token = localStorage.getItem('token') || ''
     return config
   },
@@ -26,6 +22,7 @@ instance.interceptors.request.use(
 // 响应拦截
 instance.interceptors.response.use(
   (res) => {
+    useCommonStore().loading = false
     if (res.status >= 300) {
       ElMessage.error(`网络请求错误，错误：${res.data.message}，ErrorCode：${res.data.statusCode}`)
       throw new Error(res.statusText)

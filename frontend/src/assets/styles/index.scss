@@ -8,7 +8,18 @@ html {
   display: none !important;
 }
 
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #c0c4cc;
+}
+
 a {
+  cursor: pointer;
   color: #2b87d1cc;
   &:hover {
     color: #2b87d1;
