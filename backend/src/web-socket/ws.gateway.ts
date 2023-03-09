@@ -50,8 +50,7 @@ export class EventsGateway {
       this.clients.splice(clientIndex, 1)
       client.broadcast.emit('clients', this.clients)
     })
-    client.emit('clients', this.clients)
-    client.broadcast.emit('clients', this.clients)
+    this.sendClientsData(client)
     return suc({ clientInfo, boardData }, '连接初始化成功')
   }
 
@@ -78,6 +77,19 @@ export class EventsGateway {
     return suc(data, '绘制成功', 'draw')
   }
 
+  @SubscribeMessage('login')
+  async handleUserLogin(@ConnectedSocket() client: Socket, @MessageBody() data: UserDTO & { oldUid: string }) {
+    const { username, uid, oldUid } = data
+    const clientIndex = this.clients.findIndex(item => item.uid === oldUid)
+    this.clients[clientIndex] = {
+      ...this.clients[clientIndex],
+      username,
+      uid
+    }
+    this.sendClientsData(client)
+    return this.clients[clientIndex]
+  }
+
   @SubscribeMessage('getColor')
   getColor(@MessageBody() index: number) {
     const data = boardData[index]
@@ -93,5 +105,10 @@ export class EventsGateway {
     const imgUrl = saveDrawCanvas(boardData)
     if (!imgUrl) return
     this.boardRecordService.save({ imgUrl, lastEditorUid: res.uid })
+  }
+
+  sendClientsData(client: Socket) {
+    client.emit('clients', this.clients)
+    client.broadcast.emit('clients', this.clients)
   }
 }

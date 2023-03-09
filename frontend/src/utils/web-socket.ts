@@ -1,6 +1,8 @@
 import io from 'socket.io-client'
 import type { ClientInfo, Res } from '@/types'
 import type { UserItem } from '@/api/user/types/user-types'
+import { useCommonStore } from '@/store/modules/common'
+import { ElLoading } from 'element-plus'
 
 export interface DrawEvent {
   index: number
@@ -15,9 +17,19 @@ interface initWsRes {
 }
 
 export function initSocket(userInfo: Partial<UserItem>, func: (res: Res<initWsRes>) => void) {
+  let loading: any
+  const timer = setTimeout(() => {
+    loading = ElLoading.service({
+      lock: true,
+      text: '加载画板中，如长时间未响应，请尝试刷新页面',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
+  }, 200)
   socket.on('connect', () => {
     socket.emit('init', userInfo, (res: Res<initWsRes>) => {
       func(res)
+      clearTimeout(timer)
+      loading?.close()
     })
   })
 }
@@ -36,8 +48,13 @@ export function drawEvent(func: (data: DrawEvent) => void) {
 
 export function clientsEvent(func: (data: ClientInfo[]) => void) {
   socket.on('clients', (data: ClientInfo[]) => {
-    console.log(data)
     func(data)
+  })
+}
+
+export function onUserLogin(data: UserItem & { oldUid: string }, func: (data: ClientInfo) => void) {
+  socket.emit('login', data, (res: ClientInfo) => {
+    func(res)
   })
 }
 

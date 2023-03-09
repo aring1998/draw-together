@@ -20,7 +20,6 @@ app.use(createPinia())
       const res = await userToken()
       const { data } = res
       localStorage.setItem('token', data.token)
-      useUserStore().token = data.token
       useUserStore().userInfo = data
     }
   } catch {

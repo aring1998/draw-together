@@ -1,7 +1,7 @@
 import type { ClientInfo } from '@/types'
 
 /**
- * 根据服务端返回设置用户信息
+ * 根据服务端返回设置客户端信息
  */
 export function setClientInfo(clientInfo: ClientInfo) {
   localStorage.setItem('clientInfo', JSON.stringify(clientInfo || '{}'))
@@ -17,3 +17,10 @@ export function updateClientDrawTime() {
   localStorage.setItem('userInfo', JSON.stringify(userInfo))
 }
 
+/**
+ * 获取客户端信息
+ */
+export function getClientInfo(key: keyof ClientInfo) {
+  const clientInfo: ClientInfo = JSON.parse(localStorage.getItem('clientInfo') || '{}')
+  return clientInfo[key]
+}

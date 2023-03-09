@@ -5,6 +5,9 @@ import { userLogin, userRegister } from '@/api/user/user'
 import type { UserItem } from '@/api/user/types/user-types'
 import pattern from '@/utils/pattern'
 import { useUserStore } from '@/store/modules/user'
+import { onUserLogin } from '@/utils/web-socket'
+import { setClientInfo, getClientInfo } from '@/views/index/methods/client-info'
+import { handleUserLogin } from '@/views/index/methods/draw-board'
 
 const emits = defineEmits(['success'])
 
@@ -58,8 +61,8 @@ function register() {
 
 function success(data: UserItem) {
   localStorage.setItem('token', data.token)
-  useUserStore().token = data.token
   useUserStore().userInfo = data
+  handleUserLogin(data)
   emits('success')
 }
 </script>

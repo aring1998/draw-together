@@ -12,9 +12,11 @@ const accoutShow = ref(false)
 const boardRecordShow = ref(false)
 function logout() {
   localStorage.removeItem('token')
-  useUserStore().token = ''
   useUserStore().userInfo = {}
   ElMessage.success('退出成功')
+  setTimeout(() => {
+    location.reload()
+  }, 500)
 }
 </script>
 
@@ -38,8 +40,8 @@ function logout() {
         <el-menu-item>勤奋榜</el-menu-item>
       </el-sub-menu>
       <div class="flex-grow"></div>
-      <el-menu-item index="account" @click="accoutShow = true" v-show="!useUserStore().token">登录/注册</el-menu-item>
-      <el-sub-menu index="userInfo" v-show="useUserStore().token">
+      <el-menu-item index="account" @click="accoutShow = true" v-show="!useUserStore().userInfo.token">登录/注册</el-menu-item>
+      <el-sub-menu index="userInfo" v-show="useUserStore().userInfo.token">
         <template #title>{{ useUserStore().userInfo.username }}</template>
         <el-menu-item @click="logout">退出登录</el-menu-item>
       </el-sub-menu>

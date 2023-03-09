@@ -1,13 +1,14 @@
 import { ref } from 'vue'
 import { throttle } from '@/utils/throttle'
-import { drawEvent, initSocket, handleDraw, type DrawEvent, getColor, clientsEvent } from '@/utils/web-socket'
+import { drawEvent, initSocket, handleDraw, type DrawEvent, getColor, clientsEvent, onUserLogin } from '@/utils/web-socket'
 import { getIndexByPos, getPosByIndex } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { setClientInfo, updateClientDrawTime } from './client-info'
+import { getClientInfo, setClientInfo, updateClientDrawTime } from './client-info'
 import { useUserStore } from '@/store/modules/user'
 import type { ClientInfo } from '@/types'
+import type { UserItem } from '@/api/user/types/user-types'
 
-export const data = ref({
+export const clientData = ref({
   uid: '',
   color: '#000000',
   rightMenuShow: false,
@@ -37,7 +38,7 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
   const boardMoveListener = function () {
     mask.onmousemove = (e: MouseEvent) => {
       return throttle(() => {
-        maskCtx.fillStyle = data.value.color
+        maskCtx.fillStyle = clientData.value.color
         const x = e.offsetX - (e.offsetX % 5)
         const y = e.offsetY - (e.offsetY % 5)
         maskCtx.fillRect(x, y, 5, 5)
@@ -66,13 +67,13 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     mask.oncontextmenu = () => false
     mask.addEventListener('mousedown', (e) => {
       if (e.button === 2) {
-        data.value.rightMenuPos = [e.offsetX, e.offsetY]
+        clientData.value.rightMenuPos = [e.offsetX, e.offsetY]
         rightMenu.handleOpen()
         mask.onmousemove = null
         return
       }
       return throttle(() => {
-        const { uid, color } = data.value
+        const { uid, color } = clientData.value
         claerOldPosDiv()
         boardCtx.fillStyle = color
         const x = e.offsetX - (e.offsetX % 5)
@@ -92,24 +93,24 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
   }
 
   const getCurrentPosColor = function () {
-    let [x, y] = data.value.rightMenuPos
+    let [x, y] = clientData.value.rightMenuPos
     x -= x % 5
     y -= y % 5
     const index = getIndexByPos(x, y)
     getColor(index, (res) => {
-      data.value.color = res.data
+      clientData.value.color = res.data
       ElMessage.success('复制颜色成功')
     })
   }
 
   initSocket(useUserStore().userInfo, (res) => {
     if (res.code === 500) return ElMessage.error(res.message)
-    data.value.uid = res.data.clientInfo.uid
+    clientData.value.uid = res.data.clientInfo.uid
     setClientInfo(res.data.clientInfo)
     initDrawBoard(res.data.boardData)
   })
   drawEvent((data) => boardDrawListener(data))
-  clientsEvent((res) => data.value.clients = res)
+  clientsEvent((res) => (clientData.value.clients = res))
   boardMoveListener()
   boardClickListener()
 
@@ -117,4 +118,16 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     boardMoveListener,
     getCurrentPosColor,
   }
+}
+export function handleUserLogin(data: UserItem) {
+  onUserLogin(
+    {
+      ...data,
+      oldUid: getClientInfo('uid') as string,
+    },
+    (res) => {
+      clientData.value.uid = res.uid
+      setClientInfo(res)
+    },
+  )
 }

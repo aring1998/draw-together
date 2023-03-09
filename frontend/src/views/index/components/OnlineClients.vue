@@ -7,7 +7,7 @@ const emits = defineEmits(['close'])
 </script>
 
 <template>
-  <el-drawer v-model="props.show" title="当前在线人数" direction="rtl" @close="emits('close')">
+  <el-drawer v-model="props.show" title="当前在线用户" direction="rtl" @close="emits('close')">
     <el-table :data="props.clients" height="500px">
       <el-table-column type="index" label="序号"></el-table-column>
       <el-table-column prop="username" label="用户" :formatter="(row) => row.username ?? '(游客)'" />
