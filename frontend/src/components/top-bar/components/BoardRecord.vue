@@ -35,7 +35,7 @@ watch(
 <template>
   <el-dialog v-model="props.show" title="画板记录" width="80vw" @close="emits('success')">
     <el-table :data="tableData" height="450px" v-loading="useCommonStore().loading">
-      <el-table-column prop="id" label="序号" width="80"></el-table-column>
+      <el-table-column type="index" label="序号" width="80"></el-table-column>
       <el-table-column label="图片" width="300">
         <template #default="scope">
           <el-image

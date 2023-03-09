@@ -20,6 +20,7 @@ export class BoardRecordService extends BaseSevice<BoardRecord> {
     const sql = this.boardRecordRepository
       .createQueryBuilder('boardRecord')
       .leftJoin(User, 'user', 'boardRecord.lastEditorUid = user.uid')
+      .orderBy('boardRecord.created', 'DESC')
       .where({ ...where })
     const records = await sql
       .select(
