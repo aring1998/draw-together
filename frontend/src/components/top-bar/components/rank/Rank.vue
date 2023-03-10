@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
-import { boardRecordList } from '@/api/board-record/board-record'
-import type { BoardRecordItem } from '@/api/board-record/types/board-record-types'
-import { formatDate } from '@/utils/time'
 import { useCommonStore } from '@/store/modules/common'
+import { formatDate } from '@/utils/time'
+import { ref, reactive, watch } from 'vue'
+import { findDiligentUser } from '@/api/draw-record/draw-record'
+import type { DrawRecordItem } from '@/api/draw-record/types/draw-record-types'
 
 const props = defineProps<{ show: boolean }>()
 const emits = defineEmits(['close'])
-const tableData = ref<BoardRecordItem[]>([])
+const tableData = ref<DrawRecordItem[]>([])
 const pagination = reactive({
   page: 1,
-  pageSize: 10,
+  pageSize: 30,
   total: 0,
 })
 async function search() {
-  const res = await boardRecordList({
+  const res = await findDiligentUser({
     ...pagination,
   })
   tableData.value = res.data.records
@@ -33,29 +33,19 @@ watch(
 </script>
 
 <template>
-  <el-dialog v-model="props.show" title="画板记录" width="80vw" @close="emits('close')">
+  <el-dialog v-model="props.show" title="绘画勤奋榜" width="80vw" @close="emits('close')">
     <el-table :data="tableData" height="450px" v-loading="useCommonStore().loading">
       <el-table-column type="index" label="序号" width="80"></el-table-column>
-      <el-table-column label="图片" width="300">
-        <template #default="scope">
-          <el-image
-            style="width: 100px; height: 60px"
-            :z-index="9000"
-            :src="scope.row?.imgUrl"
-            :preview-src-list="[scope.row?.imgUrl]"
-            :preview-teleported="true"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="username" label="最后修改者" width="200" :formatter="(row) => row.username ?? '(游客)'" />
-      <el-table-column prop="created" label="存储时间" :formatter="(row) => formatDate(row.created)" />
+      <el-table-column prop="username" label="用户名" width="200" :formatter="(row) => row.username ?? '(游客)'" />
+      <el-table-column prop="count" label="绘画次数" width="200" />
+      <el-table-column prop="lastEditDate" label="最后绘画时间" :formatter="(row) => formatDate(row.created)" />
     </el-table>
     <el-pagination
       v-model:currentPage="pagination.page"
       :page-size="pagination.pageSize"
       layout="total, prev, pager, next, sizes"
       :total="pagination.total"
-      :page-sizes="[10, 20, 30]"
+      :page-sizes="[10, 30, 50]"
       @size-change="
         (size) => {
           pagination.pageSize = size

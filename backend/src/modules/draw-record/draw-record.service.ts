@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { DrawRecord } from './draw-record.entity'
 import { BaseSevice } from 'src/common/utils/base.service'
+import { User } from '../user/user.entity'
+import { BasePageDTO } from 'src/common/utils/base.dto'
 
 @Injectable()
 export class DrawRecordService extends BaseSevice<DrawRecord> {
@@ -17,5 +19,31 @@ export class DrawRecordService extends BaseSevice<DrawRecord> {
   }
   findLastRecordByUid(uid: string) {
     return this.drawRecordRepository.createQueryBuilder().where({ uid }).orderBy('drawTime', 'DESC').getOne()
+  }
+  async findDiligentUser(option: BasePageDTO) {
+    const { page = 1, pageSize = 200 } = option
+    const sql = this.drawRecordRepository
+      .createQueryBuilder('drawRecord')
+      .leftJoin(User, 'user', 'drawRecord.uid = user.uid')
+      .groupBy('user.username')
+      .having('user.username IS NOT NULL')
+      .select(
+        `
+          user.username,
+          MAX(drawRecord.created) AS lastEditDate,
+          COUNT(user.username) AS count
+        `
+      )
+    const records = await sql
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getRawMany()
+    const { length: total } = await sql.getRawMany()
+    return {
+      records,
+      total,
+      page: Number(page),
+      pageSize: Number(pageSize)
+    }
   }
 }

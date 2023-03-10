@@ -4,12 +4,14 @@ import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import Account from './components/Account.vue'
 import BoardRecord from './components/BoardRecord.vue'
+import Rank from './components/rank/Rank.vue'
 
 const activeMenu = '1'
 const emits = defineEmits(['colorBoardShowChange'])
 const props = defineProps<{ colorBoardShow: boolean }>()
 const accoutShow = ref(false)
 const boardRecordShow = ref(false)
+const rankShow = ref(false)
 function logout() {
   localStorage.removeItem('token')
   useUserStore().userInfo = {}
@@ -37,7 +39,7 @@ function logout() {
       <el-menu-item index="boardRecord" @click="boardRecordShow = true">画板记录</el-menu-item>
       <el-sub-menu index="rank">
         <template #title>排行</template>
-        <el-menu-item>勤奋榜</el-menu-item>
+        <el-menu-item @click="rankShow = true">勤奋榜</el-menu-item>
       </el-sub-menu>
       <div class="flex-grow"></div>
       <el-menu-item index="account" @click="accoutShow = true" v-show="!useUserStore().userInfo.token">登录/注册</el-menu-item>
@@ -49,7 +51,8 @@ function logout() {
     <el-dialog v-model="accoutShow" width="30vw">
       <Account @success="accoutShow = false"></Account>
     </el-dialog>
-    <BoardRecord @success="boardRecordShow = false" :show="boardRecordShow"></BoardRecord>
+    <BoardRecord @close="boardRecordShow = false" :show="boardRecordShow"></BoardRecord>
+    <Rank @close="rankShow = false" :show="rankShow"></Rank>
   </div>
 </template>
 

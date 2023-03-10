@@ -26,3 +26,5 @@ export class BasePageDataDTO<T> extends BasePageDTO {
   records: T
   total: number
 }
+
+export class BasePageResDTO<T> extends BaseResDTO<BasePageDataDTO<T>> {}

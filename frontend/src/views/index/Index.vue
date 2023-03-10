@@ -4,7 +4,6 @@ import { useDrawBoard, clientData } from './methods/draw-board'
 import TopBar from '@/components/top-bar/TopBar.vue'
 import ColorBoard from './components/ColorBoard.vue'
 import OnlineClients from './components/OnlineClients.vue'
-import { useCommonStore } from '@/store/modules/common'
 
 const boardRef = ref<HTMLCanvasElement>()
 const maskRef = ref<HTMLCanvasElement>()
@@ -41,7 +40,7 @@ onMounted(() => {
       <OnlineClients :show="onlineClientsShow" :clients="clientData.clients" @close="onlineClientsShow = false"></OnlineClients>
     </p>
     <color-board @colorSelect="(val) => (clientData.color = val)" v-model="clientData.color" v-show="colorBoardShow"></color-board>
-    <div class="board-wrap" v-loading="useCommonStore().loading">
+    <div class="board-wrap">
       <div class="canvas-wrap">
         <canvas ref="boardRef" width="1000" height="600"></canvas>
         <canvas ref="maskRef" width="1000" height="600"></canvas>
@@ -74,12 +73,10 @@ onMounted(() => {
   .intro {
     font-size: 14px;
     color: #999;
-    // margin: 2px;
   }
   .board-wrap {
     position: relative;
     width: 1000px;
-    height: 600px;
 
     canvas {
       position: absolute;
