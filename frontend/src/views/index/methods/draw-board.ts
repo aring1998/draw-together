@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { throttle } from '@/utils/throttle'
 import { drawEvent, initSocket, handleDraw, type DrawEvent, getColor, clientsEvent, onUserLogin } from '@/utils/web-socket'
-import { getIndexByPos, getPosByIndex } from '@/utils'
+import { base64ToBlob, getIndexByPos, getPosByIndex } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { getClientInfo, setClientInfo, updateClientDrawTime } from './client-info'
 import { useUserStore } from '@/store/modules/user'
@@ -103,6 +103,14 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
     })
   }
 
+  const downloadCanvas = function () {
+    const a = document.createElement('a')
+    const blob = base64ToBlob(board.toDataURL('image/png'))
+    a.href = URL.createObjectURL(blob)
+    a.download = 'DrawTogether.png'
+    a.click()
+  }
+
   initSocket(useUserStore().userInfo, (res) => {
     if (res.code === 500) return ElMessage.error(res.message)
     clientData.value.uid = res.data.clientInfo.uid
@@ -117,6 +125,7 @@ export function useDrawBoard(board: HTMLCanvasElement, mask: HTMLCanvasElement, 
   return {
     boardMoveListener,
     getCurrentPosColor,
+    downloadCanvas,
   }
 }
 export function handleUserLogin(data: UserItem) {

@@ -20,6 +20,9 @@ function logout() {
     location.reload()
   }, 500)
 }
+function seeCode() {
+  window.open('https://gitee.com/aring1998/draw-together/')
+}
 </script>
 
 <template>
@@ -42,6 +45,7 @@ function logout() {
         <el-menu-item @click="rankShow = true">勤奋榜</el-menu-item>
       </el-sub-menu>
       <div class="flex-grow"></div>
+      <el-menu-item index="code" @click="seeCode">访问项目源码</el-menu-item>
       <el-menu-item index="account" @click="accoutShow = true" v-show="!useUserStore().userInfo.token">登录/注册</el-menu-item>
       <el-sub-menu index="userInfo" v-show="useUserStore().userInfo.token">
         <template #title>{{ useUserStore().userInfo.username }}</template>

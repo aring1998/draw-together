@@ -13,20 +13,25 @@ const onlineClientsShow = ref(false)
 
 let boardMoveFunc: Function
 let getColorFunc: Function
+let downloadCanvasFunc: Function
 function rightMenuShowChange(flag: boolean) {
   if (!flag) boardMoveFunc()
 }
 function getCurrentPosColor() {
   return getColorFunc && getColorFunc()
 }
+function downloadCurrentBoard() {
+  return downloadCanvasFunc && downloadCanvasFunc()
+}
 onMounted(() => {
   const board = boardRef.value
   const mask = maskRef.value
   const rightMenu = rightMenuRef.value
   if (!board || !mask || !rightMenu) return
-  const { boardMoveListener, getCurrentPosColor } = useDrawBoard(board, mask, rightMenu)
+  const { boardMoveListener, getCurrentPosColor, downloadCanvas } = useDrawBoard(board, mask, rightMenu)
   boardMoveFunc = boardMoveListener
   getColorFunc = getCurrentPosColor
+  downloadCanvasFunc = downloadCanvas
 })
 </script>
 
@@ -35,7 +40,7 @@ onMounted(() => {
     <top-bar :colorBoardShow="colorBoardShow" @colorBoardShowChange="(val) => (colorBoardShow = val)"></top-bar>
     <h2>一起来画画吧！</h2>
     <p class="intro">
-      您每次仅仅可绘制一个像素块，全画板共24000个像素块，请随心所欲的在画板上与他人进行共同创作（或者捣蛋）。
+      这是一块多人同屏画板，您每次仅可绘制一个像素块，全画板共24000个像素块，请随心所欲的在画板上与他人进行共同创作（或捣蛋）。
       <a @click="onlineClientsShow = true">当前在线人数：{{ clientData.clients.length || 0 }}</a>
       <OnlineClients :show="onlineClientsShow" :clients="clientData.clients" @close="onlineClientsShow = false"></OnlineClients>
     </p>
@@ -51,6 +56,7 @@ onMounted(() => {
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="getCurrentPosColor">复制该颜色</el-dropdown-item>
+              <el-dropdown-item @click="downloadCurrentBoard">下载该图片</el-dropdown-item>
               <el-dropdown-item divided>关闭菜单</el-dropdown-item>
             </el-dropdown-menu>
           </template>

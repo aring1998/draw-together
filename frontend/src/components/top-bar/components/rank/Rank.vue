@@ -38,7 +38,7 @@ watch(
       <el-table-column type="index" label="序号" width="80"></el-table-column>
       <el-table-column prop="username" label="用户名" width="200" :formatter="(row) => row.username ?? '(游客)'" />
       <el-table-column prop="count" label="绘画次数" width="200" />
-      <el-table-column prop="lastEditDate" label="最后绘画时间" :formatter="(row) => formatDate(row.created)" />
+      <el-table-column prop="lastEditDate" label="最后绘画时间" :formatter="(row) => formatDate(row.lastEditDate)" />
     </el-table>
     <el-pagination
       v-model:currentPage="pagination.page"
