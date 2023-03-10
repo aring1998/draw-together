@@ -3,7 +3,7 @@ import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from '
 import { ElMessage } from 'element-plus'
 
 const instance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}api`,
+  baseURL:  import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
   validateStatus: (status) => status >= 200 && status <= 600,
 })

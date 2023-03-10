@@ -1,7 +1,6 @@
 import io from 'socket.io-client'
 import type { ClientInfo, Res } from '@/types'
 import type { UserItem } from '@/api/user/types/user-types'
-import { useCommonStore } from '@/store/modules/common'
 import { ElLoading } from 'element-plus'
 
 export interface DrawEvent {
@@ -9,7 +8,9 @@ export interface DrawEvent {
   color: string
 }
 
-export const socket = io(import.meta.env.VITE_API_BASE_URL)
+export const socket = io(import.meta.env.VITE_WS_BASE_URL, {
+  path: import.meta.env.VITE_WS_BASE_PATH,
+})
 
 interface initWsRes {
   clientInfo: ClientInfo
