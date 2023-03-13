@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm'
 export class CommonEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Column({ primary: true, comment: '主键id' })

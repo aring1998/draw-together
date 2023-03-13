@@ -22,6 +22,9 @@ interface Client {
 
 const TIME_INTERVAL = 500
 const boardData = getBoardData() || initBoardData()
+export function getCurrentBoardData() {
+  return boardData
+}
 
 @WebSocketGateway({
   cors: {

@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
   }
   async valiAuth(token: string, req: Request) {
     const userInfo = await this.userService.findOne({ token })
-    if (!userInfo) noAuth()
+    if (!userInfo?.auth) noAuth()
     req.body.userInfo = userInfo
     return true
   }

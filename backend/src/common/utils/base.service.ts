@@ -13,7 +13,12 @@ export class BaseSevice<T> {
   }
 
   saveMany(data: DeepPartial<T>[]): Promise<T[]> {
-    return this.repository.save(data)
+    return this.repository.save(
+      data.map(item => ({
+        ...item,
+        created: getCurrentTime()
+      }))
+    )
   }
 
   find(option: FindOptionsWhere<Partial<T>>): Promise<T[]> {

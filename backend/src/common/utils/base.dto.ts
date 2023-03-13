@@ -1,4 +1,4 @@
-import { IsNumberString, IsOptional, MaxLength, MinLength, NotContains } from 'class-validator'
+import { IsNumber, IsOptional, Max, Min } from 'class-validator'
 
 export class BaseResDTO<T> {
   code: number
@@ -8,17 +8,14 @@ export class BaseResDTO<T> {
 
 export class BasePageDTO {
   @IsOptional()
-  @IsNumberString()
-  @NotContains('-')
-  @MinLength(1)
-  @MaxLength(3)
+  @IsNumber()
+  @Min(1)
   page: number
 
   @IsOptional()
-  @IsNumberString()
-  @NotContains('-')
-  @MinLength(1)
-  @MaxLength(3)
+  @IsNumber()
+  @Min(1)
+  @Max(500)
   pageSize: number
 }
 

@@ -21,19 +21,13 @@ export class DrawRecordService extends BaseSevice<DrawRecord> {
     return this.drawRecordRepository.createQueryBuilder().where({ uid }).orderBy('drawTime', 'DESC').getOne()
   }
   async findDiligentUser(option: BasePageDTO) {
-    const { page = 1, pageSize = 200 } = option
+    const { page, pageSize } = option
     const sql = this.drawRecordRepository
       .createQueryBuilder('drawRecord')
       .leftJoin(User, 'user', 'drawRecord.uid = user.uid')
       .groupBy('user.username')
       .having('user.username IS NOT NULL')
-      .select(
-        `
-          user.username,
-          MAX(drawRecord.created) AS lastEditDate,
-          COUNT(user.username) AS count
-        `
-      )
+      .select(['user.username AS username', 'MAX(drawRecord.created) AS lastEditDate', 'COUNT(user.username) AS count'])
     const records = await sql
       .skip((page - 1) * pageSize)
       .take(pageSize)
@@ -42,8 +36,8 @@ export class DrawRecordService extends BaseSevice<DrawRecord> {
     return {
       records,
       total,
-      page: Number(page),
-      pageSize: Number(pageSize)
+      page,
+      pageSize
     }
   }
 }
