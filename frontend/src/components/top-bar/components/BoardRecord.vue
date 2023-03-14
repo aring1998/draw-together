@@ -18,6 +18,7 @@ async function search() {
     ...pagination,
   })
   tableData.value = res.data.records
+  pagination.total = res.data.total
 }
 watch(
   props,

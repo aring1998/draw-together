@@ -16,7 +16,7 @@ instance.interceptors.request.use(
     return config
   },
   (err: AxiosError) => {
-    console.log(err)
+    console.error(err)
   },
 )
 // 响应拦截
