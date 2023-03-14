@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsOptional, IsEnum, Length, IsEmail, IsString } from 'class-validator'
+import { IsNotEmpty, IsOptional, Length, IsEmail, IsString } from 'class-validator'
+import { AuthEnum } from 'src/common/enums/common.enums'
 
 export class UserDTO {
   id: number
@@ -6,7 +7,7 @@ export class UserDTO {
   token: string
   email: string
   uid: string
-  auth: number
+  auth: AuthEnum
 }
 
 export class UserLoginDTO {

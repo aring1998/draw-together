@@ -1,4 +1,5 @@
 import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { DelFlagEnum } from '../enums/common.enums'
 export class CommonEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Column({ primary: true, comment: '主键id' })
@@ -8,5 +9,5 @@ export class CommonEntity extends BaseEntity {
   created: string
 
   @Column({ default: 0, comment: '删除标志: 0-正常, 1-作废' })
-  delFlag: number
+  delFlag: DelFlagEnum
 }

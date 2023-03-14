@@ -1,14 +1,15 @@
 import { readFileSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
 import { getCurrentTime } from 'src/common/utils/time'
+import { Logger } from '@nestjs/common'
 dotenv.config()
 
 export function saveBoardData(boardData: string[]): Error | undefined {
   try {
     writeFileSync(process.env.BACKUP_PATH, JSON.stringify(boardData))
-    console.log(`${getCurrentTime()} 备份创建成功`)
+    Logger.verbose(`${getCurrentTime()} 备份画板数据成功`)
   } catch (err) {
-    console.error(err)
+    Logger.error(`备份画板数据失败，${err}`)
     return err
   }
 }

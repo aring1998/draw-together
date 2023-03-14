@@ -3,8 +3,6 @@ import { BasePageDTO } from '../utils/base.dto'
 
 @Injectable()
 export class PaginationPipe implements PipeTransform {
-  constructor() {}
-
   transform(val: BasePageDTO & { [propName: string]: any }) {
     return {
       ...val,

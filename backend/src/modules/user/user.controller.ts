@@ -24,8 +24,7 @@ export class UserController {
     const res = await this.userService.save({
       ...payload,
       uid: uuidv4(),
-      token: uuidv4(),
-      auth: 0
+      token: uuidv4()
     })
     const { password: _, ...data } = res
     return suc(data, '注册成功，已为您自动登录')

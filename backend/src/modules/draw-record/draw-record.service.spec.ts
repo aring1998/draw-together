@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DrawRecordService } from './draw-record.service'
 
-describe('OrderService', () => {
+describe('DrawRecordService', () => {
   let service: DrawRecordService
 
   beforeEach(async () => {
@@ -10,9 +10,9 @@ describe('OrderService', () => {
     }).compile()
 
     service = module.get<DrawRecordService>(DrawRecordService)
-  });
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    expect(service).toBeDefined()
+  })
+})

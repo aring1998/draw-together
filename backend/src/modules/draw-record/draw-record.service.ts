@@ -17,9 +17,6 @@ export class DrawRecordService extends BaseSevice<DrawRecord> {
   findLastRecord() {
     return this.drawRecordRepository.createQueryBuilder().orderBy('drawTime', 'DESC').getOne()
   }
-  findLastRecordByUid(uid: string) {
-    return this.drawRecordRepository.createQueryBuilder().where({ uid }).orderBy('drawTime', 'DESC').getOne()
-  }
   async findDiligentUser(option: BasePageDTO) {
     const { page, pageSize } = option
     const sql = this.drawRecordRepository

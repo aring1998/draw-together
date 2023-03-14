@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DrawRecordController } from './draw-record.controller'
 
-describe('OrderController', () => {
+describe('DrawRecordController', () => {
   let controller: DrawRecordController
 
   beforeEach(async () => {

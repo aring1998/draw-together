@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { BoardRecordController } from './board-record.controller'
 
-describe('OrderController', () => {
+describe('BoardRecordController', () => {
   let controller: BoardRecordController
 
   beforeEach(async () => {

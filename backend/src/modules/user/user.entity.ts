@@ -1,3 +1,4 @@
+import { AuthEnum } from 'src/common/enums/common.enums'
 import { CommonEntity } from 'src/common/utils/base.entity'
 import { Entity, Column } from 'typeorm'
 
@@ -15,8 +16,8 @@ export class User extends CommonEntity {
   @Column({ default: null, comment: '邮箱' })
   email: string
 
-  @Column({ comment: '权限' })
-  auth: number
+  @Column({ default: 0, comment: '权限：0-普通用户, 1-管理员' })
+  auth: AuthEnum
 
   @Column({ comment: '用户令牌' })
   token: string

@@ -1,5 +1,6 @@
 import { DeepPartial, FindOptionsWhere, Repository, UpdateResult } from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
+import { DelFlagEnum } from '../enums/common.enums'
 import { getCurrentTime } from './time'
 
 export class BaseSevice<T> {
@@ -30,7 +31,7 @@ export class BaseSevice<T> {
   }
 
   deleteById(id: number): Promise<UpdateResult> {
-    return this.repository.update(id, { delFlag: 1 } as any)
+    return this.repository.update(id, { delFlag: DelFlagEnum.Deleted } as any)
   }
 
   update(id: number, params: QueryDeepPartialEntity<T>): Promise<UpdateResult> {
