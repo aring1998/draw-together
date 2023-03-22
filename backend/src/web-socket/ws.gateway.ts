@@ -47,10 +47,10 @@ export class EventsGateway {
       drawTime: getCurrentTimeStamp() - TIME_INTERVAL,
       created: getCurrentTime()
     }
-    const clientIndex = this.clients.findIndex(item => item.uid === uid)
+    const clientIndex = this.findClientIndex(uid)
     if (clientIndex === -1) this.clients.push(clientInfo)
     client.on('disconnect', () => {
-      this.clients.splice(clientIndex, 1)
+      this.clients.splice(this.findClientIndex(uid), 1)
       client.broadcast.emit('clients', this.clients)
     })
     this.sendClientsData(client)
@@ -60,7 +60,7 @@ export class EventsGateway {
   @SubscribeMessage('draw')
   async handleDraw(@ConnectedSocket() client: Socket, @MessageBody() data: { uid: string; index: number; color: string }) {
     const { uid, index, color } = data
-    const clientIndex = this.clients.findIndex(item => item.uid === uid)
+    const clientIndex = this.findClientIndex(uid)
     if (clientIndex === -1) return fail('与服务器失去链接，请尝试刷新页面')
     const drawTime = this.clients[clientIndex].drawTime
     const currentTime = Number(dayjs().valueOf())
@@ -108,6 +108,10 @@ export class EventsGateway {
     const imgUrl = saveDrawCanvas(boardData)
     if (!imgUrl) return
     this.boardRecordService.save({ imgUrl, lastEditorUid: res.uid })
+  }
+
+  findClientIndex(uid: string) {
+    return this.clients.findIndex(item => item.uid === uid)
   }
 
   sendClientsData(client: Socket) {
